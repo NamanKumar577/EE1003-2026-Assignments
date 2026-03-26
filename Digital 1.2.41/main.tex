@@ -1,0 +1,183 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+\usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{txfonts}
+\usepackage{tkz-euclide}
+\usepackage{listings}
+\usepackage{adjustbox}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{gvv}
+\usepackage{lmodern}
+\usepackage{circuitikz}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+\setbeamertemplate{page number in head/foot}[totalframenumber]
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\small,
+    keywordstyle=\color{blue},
+    stringstyle=\color{orange},
+    commentstyle=\color{green!60!black},
+    numbers=left,
+    numberstyle=\tiny\color{gray},
+    breaklines=true,
+    showstringspaces=false,
+}
+
+\begin{document}
+
+\title{1.2.41}
+\date{MN 2007}
+\author{Signal Processing -- Discrete}
+
+\frame{\titlepage}
+
+%% -------------------------------------------------------
+\begin{frame}{Question}
+The solution of
+\begin{align}
+    ye^x\,dx + \brak{4y + e^x}\,dy = 0, \quad y(0) = -1
+\end{align}
+is
+\vspace{0.3cm}
+\begin{columns}
+\column{0.5\textwidth}
+    \textbf{a)} $ye^x + 2y^2 - 1 = 0$\\[0.4cm]
+    \textbf{b)} $e^x + y^2 - 2 = 0$
+\column{0.5\textwidth}
+    \textbf{c)} $ye^x - y^2 = 0$\\[0.4cm]
+    \textbf{d)} $ye^x + y^2 - 1 = 0$
+\end{columns}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}{Solution}
+Rearrange the equation by dividing throughout by $dy$:
+\begin{align}
+    ye^x\,\frac{dx}{dy} + 4y + e^x &= 0 \\
+    ye^x\,\frac{dx}{dy} + e^x &= -4y
+\end{align}
+
+Observe the product rule for differentiation with respect to $y$:
+\begin{align}
+    \frac{d}{dy}\brak{ye^x} = e^x + ye^x\,\frac{dx}{dy} \label{eq:prod}
+\end{align}
+
+The left-hand side is exactly $\dfrac{d}{dy}\brak{ye^x}$, so:
+\begin{align}
+    \frac{d}{dy}\brak{ye^x} = -4y
+\end{align}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}{Solution}
+Integrating both sides with respect to $y$:
+\begin{align}
+    \int \frac{d}{dy}\brak{ye^x}\,dy &= \int -4y\,dy \\
+    ye^x &= -2y^2 + C \label{eq:gen}
+\end{align}
+
+Applying the initial condition $y(0) = -1$, i.e.\ $x=0$ when $y=-1$:
+\begin{align}
+    \brak{-1}e^{0} &= -2\brak{-1}^2 + C \\
+    -1 &= -2 + C \\
+    C &= 1
+\end{align}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}{Solution}
+Substituting $C = 1$ into \eqref{eq:gen}:
+\begin{align}
+    ye^x &= -2y^2 + 1 \\
+    \boxed{ye^x + 2y^2 - 1 = 0}
+\end{align}
+
+\textbf{Verification:} At $y(0)=-1$,
+\begin{align}
+    \brak{-1}e^{0} + 2\brak{-1}^2 - 1 = -1 + 2 - 1 = 0 \quad \checkmark
+\end{align}
+
+\begin{block}{Answer}
+\centering \textbf{Option (a):} $ye^x + 2y^2 - 1 = 0$
+\end{block}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}{Plot}
+    \begin{figure}
+        \centering
+        \includegraphics[width=0.75\columnwidth]{figs/image.png}
+        \caption{Solution curve of $ye^x + 2y^2 - 1 = 0$}
+        \label{fig:placeholder}
+    \end{figure}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Python Code}
+\begin{lstlisting}
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.integrate import odeint
+
+# Rewrite ODE: dy/dx from ye^x dx + (4y + e^x) dy = 0
+# => dy/dx = -y e^x / (4y + e^x)
+def ode(y, x):
+    ex = np.exp(x)
+    denom = 4*y + ex
+    if abs(denom) < 1e-10:
+        return 0.0
+    return -y * ex / denom
+
+# Solve numerically
+x = np.linspace(0, 2, 500)
+y0 = [-1.0]
+sol = odeint(ode, y0, x)
+\end{lstlisting}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Python Code}
+\begin{lstlisting}
+# Analytical solution: 2y^2 + e^x * y - 1 = 0
+# Quadratic formula: y = (-e^x +/- sqrt(e^2x + 8)) / 4
+# Use MINUS root to match initial condition y(0) = -1:
+# y(0) = (-1 - sqrt(9)) / 4 = (-1-3)/4 = -1  (correct)
+def y_analytical(x_vals):
+    ex = np.exp(x_vals)
+    discriminant = ex**2 + 8
+    return (-ex - np.sqrt(discriminant)) / 4
+
+y_anal = y_analytical(x)
+\end{lstlisting}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}[fragile]
+\frametitle{Python Code}
+\begin{lstlisting}
+# Plot
+plt.figure(figsize=(8, 4))
+plt.plot(x, sol, 'b-', label='Numerical (odeint)')
+plt.plot(x, y_anal, 'r--', label=r'Analytical: $ye^x+2y^2-1=0$')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title(r'Solution of $ye^x\,dx + (4y+e^x)\,dy = 0$, $y(0)=-1$')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig("image.png", dpi=300)
+plt.show()
+\end{lstlisting}
+\end{frame}
+
+\end{document}

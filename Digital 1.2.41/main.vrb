@@ -1,0 +1,15 @@
+\frametitle{Python Code}
+\begin{lstlisting}
+# Plot
+plt.figure(figsize=(8, 4))
+plt.plot(x, sol, 'b-', label='Numerical (odeint)')
+plt.plot(x, y_anal, 'r--', label=r'Analytical: $ye^x+2y^2-1=0$')
+plt.xlabel('x')
+plt.ylabel('y')
+plt.title(r'Solution of $ye^x\,dx + (4y+e^x)\,dy = 0$, $y(0)=-1$')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.savefig("image.png", dpi=300)
+plt.show()
+\end{lstlisting}
