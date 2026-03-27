@@ -1,17 +1,17 @@
 \frametitle{Python Code}
 \begin{lstlisting}
-# Plot
-plt.figure(figsize=(8, 4))
-plt.plot(t_conv, y_num, 'b-', label='Numerical convolution')
-plt.plot(t, y_anal, 'r--', label=r'Analytical: $\frac{1}{2}(t-1)^2 u(t-1)$')
-plt.xlim(-1, 6)
-plt.ylim(-0.5, 8)
-plt.xlabel('t')
-plt.ylabel('y(t)')
-plt.title(r'$u(t+1) * r(t-2)$')
-plt.legend()
-plt.grid(True)
+
+axes[0].plot(t, y_base, 'b-', linewidth=2)
+axes[0].set_title(r'$u(t)*r(t)=\frac{1}{2}t^2 u(t)$  [Base: $a=0,b=0$, onset $t=0$]')
+axes[0].set_ylabel('y(t)'); axes[0].grid(True); axes[0].set_ylim(-0.5,9)
+
+axes[1].plot(t, y_question, 'r-', linewidth=2)
+axes[1].set_title(r'$u(t+1)*r(t-2)=\frac{1}{2}(t-1)^2 u(t-1)$  [Question, onset $t=1$]')
+axes[1].set_ylabel('y(t)'); axes[1].set_xlabel('t')
+axes[1].grid(True); axes[1].set_ylim(-0.5,9)
+
+plt.xlim(-2, 8)
 plt.tight_layout()
-plt.savefig("convolution.png", dpi=300)
+plt.savefig("image.png", dpi=300)
 plt.show()
 \end{lstlisting}

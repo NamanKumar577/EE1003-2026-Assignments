@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.25)  26 MAR 2026 16:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2025.8.25)  27 MAR 2026 15:29
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1566,10 +1566,10 @@ LaTeX Font Info:    Font shape `OT1/lmss/m/it' in size <7> not available
  [5
 
 ]
-<figs/image.png, id=188, 505.89pt x 289.08pt>
+<figs/image.png, id=189, 505.89pt x 289.08pt>
 File: figs/image.png Graphic file (type png)
 <use figs/image.png>
-Package pdftex.def Info: figs/image.png  used on input line 139.
+Package pdftex.def Info: figs/image.png  used on input line 140.
 (pdftex.def)             Requested size: 256.72147pt x 146.70102pt.
  [6
 
@@ -1582,17 +1582,13 @@ LaTeX Font Info:    Trying to load font information for OT1+lmtt on input line
 
 (/usr/share/texmf/tex/latex/lm/ot1lmtt.fd
 File: ot1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
-))
-Overfull \vbox (13.72923pt too high) detected at line 165
- []
-
-[7
+)) [7
 
 {/usr/share/texmf/fonts/enc/dvips/lm/lm-rmtt.enc}]
 \openout4 = `main.vrb'.
 
  (./main.vrb)
-Overfull \vbox (49.72923pt too high) detected at line 192
+Overfull \vbox (13.72923pt too high) detected at line 187
  []
 
 [8
@@ -1616,24 +1612,24 @@ Package rerunfilecheck Info: File `main.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 50246 strings out of 474222
- 1186357 string characters out of 5748733
- 2172975 words of memory out of 5000000
- 71608 multiletter control sequences out of 15000+600000
+ 50265 strings out of 474222
+ 1186805 string characters out of 5748733
+ 2108975 words of memory out of 5000000
+ 71627 multiletter control sequences out of 15000+600000
  617607 words of font info for 105 fonts, out of 8000000 for 9000
  1144 hyphenation exceptions out of 8191
- 128i,15n,123p,1172b,1363s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 128i,16n,123p,1172b,1363s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texmf/fonts/type1/public/lm/lmmi10.pfb></usr/share/texmf/fonts/ty
 pe1/public/lm/lmss10.pfb></usr/share/texmf/fonts/type1/public/lm/lmss12.pfb></u
 sr/share/texmf/fonts/type1/public/lm/lmss8.pfb></usr/share/texmf/fonts/type1/pu
 blic/lm/lmssbx10.pfb></usr/share/texmf/fonts/type1/public/lm/lmsso10.pfb></usr/
-share/texmf/fonts/type1/public/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/publ
-ic/lm/lmtt10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/txfonts/txsy
-a.pfb>
-Output written on main.pdf (8 pages, 231293 bytes).
+share/texmf/fonts/type1/public/lm/lmsso8.pfb></usr/share/texmf/fonts/type1/publ
+ic/lm/lmsy10.pfb></usr/share/texmf/fonts/type1/public/lm/lmtt10.pfb></usr/share
+/texlive/texmf-dist/fonts/type1/public/txfonts/txsya.pfb>
+Output written on main.pdf (8 pages, 245732 bytes).
 PDF statistics:
- 323 PDF objects out of 1000 (max. 8388607)
- 260 compressed objects within 3 object streams
+ 328 PDF objects out of 1000 (max. 8388607)
+ 263 compressed objects within 3 object streams
  18 named destinations out of 1000 (max. 500000)
  126 words of extra memory for PDF output out of 10000 (max. 10000000)
 

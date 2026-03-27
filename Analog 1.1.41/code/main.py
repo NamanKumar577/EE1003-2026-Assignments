@@ -1,42 +1,30 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Define unit step
 def u(t):
     return np.where(t >= 0, 1.0, 0.0)
 
-# Define unit ramp
-def r(t):
-    return t * u(t)
+t = np.linspace(-2, 8, 10000)
 
-# Time axis
-t = np.linspace(-1, 6, 10000)
-dt = t[1] - t[0]
+y_base = 0.5 * t**2 * u(t)
 
+a, b = -1, 2
+y_general = 0.5 * (t - a - b)**2 * u(t - a - b)
 
-# Signals to convolve
-f1 = u(t + 1)       # u(t+1)
-f2 = r(t - 2)       # r(t-2)
+y_question = 0.5 * (t - 1)**2 * u(t - 1)
 
-# Convolution (numerical)
-y_num = np.convolve(f1, f2, mode='full') * dt
-t_conv = np.linspace(2*t[0], 2*t[-1], len(y_num))
+fig, axes = plt.subplots(2, 1, figsize=(9, 9), sharex=True)
 
-# Analytical result
-y_anal = 0.5 * (t - 1)**2 * u(t - 1)
+axes[0].plot(t, y_base, 'b-', linewidth=2)
+axes[0].set_title(r'$u(t)*r(t)=\frac{1}{2}t^2 u(t)$  [Base: $a=0,b=0$, onset $t=0$]')
+axes[0].set_ylabel('y(t)'); axes[0].grid(True); axes[0].set_ylim(-0.5,9)
 
+axes[1].plot(t, y_question, 'r-', linewidth=2)
+axes[1].set_title(r'$u(t+1)*r(t-2)=\frac{1}{2}(t-1)^2 u(t-1)$  [Question, onset $t=1$]')
+axes[1].set_ylabel('y(t)'); axes[1].set_xlabel('t')
+axes[1].grid(True); axes[1].set_ylim(-0.5,9)
 
-# Plot
-plt.figure(figsize=(8, 4))
-plt.plot(t_conv, y_num, 'b-', label='Numerical convolution')
-plt.plot(t, y_anal, 'r--', label=r'Analytical: $\frac{1}{2}(t-1)^2 u(t-1)$')
-plt.xlim(-1, 6)
-plt.ylim(-0.5, 8)
-plt.xlabel('t')
-plt.ylabel('y(t)')
-plt.title(r'$u(t+1) * r(t-2)$')
-plt.legend()
-plt.grid(True)
+plt.xlim(-2, 8)
 plt.tight_layout()
-plt.savefig("convolution.png", dpi=300)
+plt.savefig("image.png", dpi=300)
 plt.show()

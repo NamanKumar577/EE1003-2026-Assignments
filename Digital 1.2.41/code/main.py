@@ -2,43 +2,44 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
-# Rewrite ODE: dy/dx from ye^x dx + (4y + e^x) dy = 0
-# => dy/dx = -y e^x / (4y + e^x)
+
 def ode(y, x):
     ex = np.exp(x)
     denom = 4*y + ex
-    if abs(denom) < 1e-10:
+    if abs(denom) < 1e-10:   
         return 0.0
     return -y * ex / denom
-
-# Solve numerically
+ 
 x = np.linspace(0, 2, 500)
-y0 = [-1.0]
-sol = odeint(ode, y0, x)
+sol = odeint(ode, [-1.0], x)
 
 
 
-# Analytical solution: 2y^2 + e^x * y - 1 = 0
-# Quadratic formula: y = (-e^x +/- sqrt(e^2x + 8)) / 4
-# Use MINUS root to match initial condition y(0) = -1:
-# y(0) = (-1 - sqrt(9)) / 4 = (-1-3)/4 = -1  (correct)
 def y_analytical(x_vals):
     ex = np.exp(x_vals)
-    discriminant = ex**2 + 8
-    return (-ex - np.sqrt(discriminant)) / 4
+    return (-ex - np.sqrt(ex**2 + 8)) / 4
 
 y_anal = y_analytical(x)
 
 
+print(f"Analytical y(0) = {y_analytical(np.array([0.0]))[0]:.4f}")
 
-plt.figure(figsize=(8, 4))
-plt.plot(x, sol, 'b-', label='Numerical (odeint)')
-plt.plot(x, y_anal, 'r--', label=r'Analytical: $ye^x+2y^2-1=0$')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title(r'Solution of $ye^x\,dx + (4y+e^x)\,dy = 0$, $y(0)=-1$')
-plt.legend()
-plt.grid(True)
+
+
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
+
+axes[0].plot(x, sol, 'b-', linewidth=2, label='Numerical (odeint)')
+axes[0].set_title('Numerical Solution via odeint')
+axes[0].set_xlabel('x'); axes[0].set_ylabel('y')
+axes[0].legend(); axes[0].grid(True)
+
+axes[1].plot(x, y_anal, 'r--', linewidth=2,
+             label=r'Analytical: $ye^x+2y^2-1=0$')
+axes[1].set_title(r'Analytical: $y=(-e^x-\sqrt{e^{2x}+8})/4$')
+axes[1].set_xlabel('x'); axes[1].set_ylabel('y')
+axes[1].legend(); axes[1].grid(True)
+
+plt.suptitle(r'Solution of $ye^x\,dx+(4y+e^x)\,dy=0$, $y(0)=-1$')
 plt.tight_layout()
 plt.savefig("image.png", dpi=300)
 plt.show()

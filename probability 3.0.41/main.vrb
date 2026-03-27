@@ -1,9 +1,6 @@
 \frametitle{Python Code}
 \begin{lstlisting}
-# Bar chart of probabilities
-labels = ['Car', 'Bus', 'Metro']
-probs  = [P_car, round(P_bus, 2), round(P_metro, 2)]
-colors = ['steelblue', 'darkorange', 'green']
+
 
 plt.figure(figsize=(7, 4))
 bars = plt.bar(labels, probs, color=colors, edgecolor='black', width=0.4)

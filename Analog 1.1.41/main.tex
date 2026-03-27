@@ -4,20 +4,20 @@
 \usetheme{Madrid}
 \usecolortheme{default}
 \usepackage{amsmath,amssymb,amsfonts,amsthm}
+\usepackage{txfonts}
+\usepackage{tkz-euclide}
 \usepackage{listings}
 \usepackage{adjustbox}
 \usepackage{array}
 \usepackage{tabularx}
+\usepackage{gvv}
+\usepackage{lmodern}
+\usepackage{circuitikz}
 \usepackage{tikz}
 \usepackage{graphicx}
 \usepackage{xcolor}
 
 \setbeamertemplate{page number in head/foot}[totalframenumber]
-
-% Redefine gvv macros manually (since gvv.sty may not be installed)
-\newcommand{\brak}[1]{\left(#1\right)}
-\newcommand{\sbrak}[1]{\left[#1\right]}
-\newcommand{\cbrak}[1]{\left\{#1\right\}}
 
 \lstset{
     language=Python,
@@ -54,80 +54,128 @@ If $u(t)$, $r(t)$ denote the unit step and unit ramp functions respectively and 
 \end{frame}
 
 %% -------------------------------------------------------
-\begin{frame}{Solution}
-Recall the definitions of the signals:
+\begin{frame}{General Setup: Shifted Signals}
+Define general time-shifted unit step and unit ramp:
 \begin{align}
-    u(t) &= \begin{cases} 1, & t \geq 0 \\ 0, & t < 0 \end{cases}
-    \implies
-    u(t+1) = \begin{cases} 1, & t \geq -1 \\ 0, & t < -1 \end{cases} \\[0.4cm]
-    r(t) &= t\,u(t) = \begin{cases} t, & t \geq 0 \\ 0, & t < 0 \end{cases}
-    \implies
-    r(t-2) = \begin{cases} t-2, & t \geq 2 \\ 0, & t < 2 \end{cases}
+    u(t-a) &= \begin{cases} 1, & t \geq a \\ 0, & t < a \end{cases} \\[0.3cm]
+    r(t-b) &= \brak{t-b}\,u(t-b) = \begin{cases} t-b, & t \geq b \\ 0, & t < b \end{cases}
 \end{align}
 
-The convolution integral is:
+We compute the general convolution:
 \begin{align}
-    y(t) = u(t+1)*r(t-2) = \int_{-\infty}^{\infty} u(\tau+1)\,r(t-\tau-2)\;d\tau
-\end{align}
-\end{frame}
-
-%% -------------------------------------------------------
-\begin{frame}{Solution}
-Both factors must be nonzero simultaneously:
-\begin{align}
-    u(\tau+1) \neq 0 \quad &\Rightarrow \quad \tau \geq -1 \label{eq:c1}\\
-    r(t-\tau-2) \neq 0 \quad &\Rightarrow \quad t-\tau-2 \geq 0 \quad \Rightarrow \quad \tau \leq t-2 \label{eq:c2}
+    y(t) = u(t-a) * r(t-b) = \int_{-\infty}^{\infty} u(\tau - a)\,r(t-\tau-b)\;d\tau
 \end{align}
 
-For a non-trivial integral, we need $-1 \leq \tau \leq t-2$, which requires:
-\begin{align}
-    -1 \leq t-2 \quad \Rightarrow \quad t \geq 1
-\end{align}
-
-\begin{block}{}
-$y(t) = 0$ for $t < 1$. \quad The convolution output starts at $t=1$.
+\begin{block}{Goal}
+    Derive a closed-form for any $a,b \in \mathbb{R}$, then substitute $a=-1,\ b=2$.
 \end{block}
 \end{frame}
 
 %% -------------------------------------------------------
-\begin{frame}{Solution}
-For $t \geq 1$, substituting $u(\tau+1)=1$ over $\sbrak{-1,\,t-2}$:
+\begin{frame}{General Solution: Limits of Integration}
+Both factors must be nonzero simultaneously:
 \begin{align}
-    y(t) &= \int_{-1}^{t-2} \brak{t - \tau - 2}\;d\tau
+    u(\tau - a) \neq 0 \quad &\Rightarrow \quad \tau \geq a \label{eq:g1}\\
+    r(t-\tau-b) \neq 0 \quad &\Rightarrow \quad t-\tau-b \geq 0 \quad \Rightarrow \quad \tau \leq t-b \label{eq:g2}
 \end{align}
 
-Let $s = t-\tau-2$, so $ds = -d\tau$.\\
-When $\tau=-1$: $s = t-1$. \quad When $\tau=t-2$: $s = 0$.
+Active integration range: $a \leq \tau \leq t-b$, which requires:
 \begin{align}
-    y(t) &= \int_{t-1}^{0} s\cdot(-ds) = \int_{0}^{t-1} s\;ds \\
-    y(t) &= \left[\frac{s^2}{2}\right]_0^{t-1} = \frac{\brak{t-1}^2}{2}
+    a \leq t - b \quad \Rightarrow \quad t \geq a + b
+\end{align}
+
+\begin{block}{}
+    $y(t) = 0$ for $t < a+b$. \quad Output starts at $t = a+b$.
+\end{block}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}{General Solution: Evaluating the Integral}
+For $t \geq a+b$, with $u(\tau-a)=1$ over $\sbrak{a,\,t-b}$:
+\begin{align}
+    y(t) &= \int_{a}^{t-b} \brak{t - \tau - b}\;d\tau
+\end{align}
+
+Let $s = t - \tau - b$, so $ds = -d\tau$:
+\begin{itemize}
+    \item When $\tau = a$: \quad $s = t - a - b$
+    \item When $\tau = t-b$: \; $s = 0$
+\end{itemize}
+\begin{align}
+    y(t) &= \int_{t-a-b}^{0} s\cdot(-ds) = \int_{0}^{t-a-b} s\;ds \\
+    y(t) &= \left[\frac{s^2}{2}\right]_0^{t-a-b} = \frac{\brak{t-a-b}^2}{2}
 \end{align}
 \end{frame}
 
 %% -------------------------------------------------------
-\begin{frame}{Solution}
-Combining both cases:
+\begin{frame}{General Result}
+Combining both cases, the \textbf{general convolution formula} is:
 \begin{align}
-    y(t) = u(t+1)*r(t-2) = \begin{cases} \dfrac{(t-1)^2}{2}, & t \geq 1 \\[6pt] 0, & t < 1 \end{cases}
+    \boxed{u(t-a) * r(t-b) = \frac{1}{2}\brak{t-a-b}^2\,u(t-a-b)}
 \end{align}
 
-This is written compactly as:
+\vspace{0.2cm}
+\textbf{Key observations:}
+\begin{itemize}
+    \item The output is always a \textbf{quadratic ramp} — same shape as $u(t)*r(t)$
+    \item It is simply the base case $\frac{1}{2}t^2 u(t)$ \textbf{shifted right by} $a+b$
+    \item $a < 0$ (step advanced) \textbf{reduces} the onset time
+    \item $b > 0$ (ramp delayed) \textbf{increases} the onset time
+    \item Net shift $= a + b$
+\end{itemize}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}{Applying to the Question}
+Substitute $a = -1$ (since $u(t+1) = u(t-(-1))$) and $b = 2$:
 \begin{align}
-    \boxed{u(t+1)*r(t-2) = \frac{1}{2}\brak{t-1}^2\,u(t-1)}
+    u(t+1) * r(t-2) &= \frac{1}{2}\brak{t-(-1)-2}^2\,u\brak{t-(-1)-2} \\
+                    &= \frac{1}{2}\brak{t-1}^2\,u(t-1)
 \end{align}
+
+Net shift $= a + b = -1 + 2 = +1$ \quad (output starts at $t=1$)
 
 \begin{block}{Answer}
 \centering \textbf{Option (c):} $\dfrac{1}{2}(t-1)^2\,u(t-1)$
 \end{block}
 \end{frame}
 
+%% -------------------------------------------------------
+\begin{frame}{Relation Between the Three Cases}
+\begin{center}
+\renewcommand{\arraystretch}{1.6}
+\begin{tabular}{|c|c|c|c|}
+\hline
+\textbf{Case} & $a$ & $b$ & \textbf{Result} \\
+\hline
+Base: $u(t)*r(t)$ & $0$ & $0$ & $\frac{1}{2}t^2\,u(t)$, onset $t=0$ \\
+\hline
+General: $u(t-a)*r(t-b)$ & $a$ & $b$ & $\frac{1}{2}(t{-}a{-}b)^2\,u(t{-}a{-}b)$ \\
+\hline
+Question: $u(t+1)*r(t-2)$ & $-1$ & $2$ & $\frac{1}{2}(t-1)^2\,u(t-1)$, onset $t=1$ \\
+\hline
+\end{tabular}
+\end{center}
+
+\vspace{0.2cm}
+All three are \textbf{identical parabolic shapes} -- only the starting point on the $t$-axis differs by $a+b$.
+The question's curve is the base case $u(t)*r(t)$ shifted \textbf{right by 1 unit}.
+\end{frame}
 
 \begin{frame}{Plot}
     \begin{figure}
         \centering
-        \includegraphics[width=0.75\columnwidth]{figs/image.png}
-        \caption{Plot}
-        \label{fig:placeholder}
+            \centering
+            \includegraphics[width=\linewidth]{figs/1.png}
+            \label{fig:plot1}
+    \end{figure}
+\end{frame}
+\begin{frame}{Plot}
+    \begin{figure}
+            \centering
+            \includegraphics[width=\linewidth]{figs/2.png}
+            \caption{Blue: base $u(t)*r(t)$, Green: general ($a=-1, b=2$), Red: question $u(t+1)*r(t-2)$}
+            \label{fig:plot2}
     \end{figure}
 \end{frame}
 
@@ -138,17 +186,19 @@ This is written compactly as:
 import numpy as np
 import matplotlib.pyplot as plt
 
-# Define unit step
 def u(t):
     return np.where(t >= 0, 1.0, 0.0)
 
-# Define unit ramp
-def r(t):
-    return t * u(t)
+t = np.linspace(-2, 8, 10000)
 
-# Time axis
-t = np.linspace(-1, 6, 10000)
-dt = t[1] - t[0]
+y_base = 0.5 * t**2 * u(t)
+
+a, b = -1, 2
+y_general = 0.5 * (t - a - b)**2 * u(t - a - b)
+
+y_question = 0.5 * (t - 1)**2 * u(t - 1)
+
+fig, axes = plt.subplots(2, 1, figsize=(9, 9), sharex=True)
 \end{lstlisting}
 \end{frame}
 
@@ -156,36 +206,19 @@ dt = t[1] - t[0]
 \begin{frame}[fragile]
 \frametitle{Python Code}
 \begin{lstlisting}
-# Signals to convolve
-f1 = u(t + 1)       # u(t+1)
-f2 = r(t - 2)       # r(t-2)
 
-# Convolution (numerical)
-y_num = np.convolve(f1, f2, mode='full') * dt
-t_conv = np.linspace(2*t[0], 2*t[-1], len(y_num))
+axes[0].plot(t, y_base, 'b-', linewidth=2)
+axes[0].set_title(r'$u(t)*r(t)=\frac{1}{2}t^2 u(t)$  [Base: $a=0,b=0$, onset $t=0$]')
+axes[0].set_ylabel('y(t)'); axes[0].grid(True); axes[0].set_ylim(-0.5,9)
 
-# Analytical result
-y_anal = 0.5 * (t - 1)**2 * u(t - 1)
-\end{lstlisting}
-\end{frame}
+axes[1].plot(t, y_question, 'r-', linewidth=2)
+axes[1].set_title(r'$u(t+1)*r(t-2)=\frac{1}{2}(t-1)^2 u(t-1)$  [Question, onset $t=1$]')
+axes[1].set_ylabel('y(t)'); axes[1].set_xlabel('t')
+axes[1].grid(True); axes[1].set_ylim(-0.5,9)
 
-%% -------------------------------------------------------
-\begin{frame}[fragile]
-\frametitle{Python Code}
-\begin{lstlisting}
-# Plot
-plt.figure(figsize=(8, 4))
-plt.plot(t_conv, y_num, 'b-', label='Numerical convolution')
-plt.plot(t, y_anal, 'r--', label=r'Analytical: $\frac{1}{2}(t-1)^2 u(t-1)$')
-plt.xlim(-1, 6)
-plt.ylim(-0.5, 8)
-plt.xlabel('t')
-plt.ylabel('y(t)')
-plt.title(r'$u(t+1) * r(t-2)$')
-plt.legend()
-plt.grid(True)
+plt.xlim(-2, 8)
 plt.tight_layout()
-plt.savefig("convolution.png", dpi=300)
+plt.savefig("image.png", dpi=300)
 plt.show()
 \end{lstlisting}
 \end{frame}

@@ -59,7 +59,7 @@ is
 
 %% -------------------------------------------------------
 \begin{frame}{Solution}
-Rearrange the equation by dividing throughout by $dy$:
+Rearrange by dividing throughout by $dy$:
 \begin{align}
     ye^x\,\frac{dx}{dy} + 4y + e^x &= 0 \\
     ye^x\,\frac{dx}{dy} + e^x &= -4y
@@ -111,69 +111,115 @@ Substituting $C = 1$ into \eqref{eq:gen}:
 \end{frame}
 
 %% -------------------------------------------------------
+\begin{frame}{How the Numerical (odeint) Plot is Obtained}
+The implicit ODE $ye^x\,dx + (4y+e^x)\,dy = 0$ is rewritten as an explicit $\dfrac{dy}{dx}$:
+\begin{align}
+    \frac{dy}{dx} = \frac{-ye^x}{4y + e^x} \label{eq:odeint}
+\end{align}
+
+\texttt{scipy.integrate.odeint} solves this using the \textbf{LSODA} algorithm:
+\begin{itemize}
+    \item Starts at the initial condition $y(0) = -1$
+    \item At each step $x_k$, evaluates $\frac{dy}{dx}\big|_{x_k,\,y_k}$ from \eqref{eq:odeint}
+    \item Advances: $y_{k+1} \approx y_k + h\cdot\frac{dy}{dx}\big|_{x_k,\,y_k}$ using adaptive Runge-Kutta / Adams methods
+    \item Automatically shrinks step size $h$ where curve bends sharply
+\end{itemize}
+
+\begin{block}{Note}
+    Accuracy degrades when $4y + e^x \to 0$ (denominator $\to 0$, slope $\to \infty$).
+\end{block}
+\end{frame}
+
+%% -------------------------------------------------------
+\begin{frame}{How the Analytical Plot is Obtained}
+The implicit solution $ye^x + 2y^2 - 1 = 0$ is a quadratic in $y$:
+\begin{align}
+    2y^2 + e^x\cdot y - 1 = 0
+\end{align}
+
+Applying the quadratic formula with $A=2,\ B=e^x,\ C=-1$:
+\begin{align}
+    y = \frac{-e^x \pm \sqrt{e^{2x} + 8}}{4}
+\end{align}
+
+Select the $\boldsymbol{-}$ branch to match $y(0)=-1$:
+\begin{align}
+    y\big|_{x=0} = \frac{-1 - \sqrt{1+8}}{4} = \frac{-1-3}{4} = -1 \quad \checkmark
+\end{align}
+
+\begin{block}{Closed-form used for plotting}
+\[
+    y(x) = \frac{-e^x - \sqrt{e^{2x}+8}}{4}
+\]
+\end{block}
+This is exact for all $x$ — no accumulation of numerical error.
+\end{frame}
+
+%% -------------------------------------------------------
 \begin{frame}{Plot}
     \begin{figure}
         \centering
-        \includegraphics[width=0.75\columnwidth]{figs/image.png}
-        \caption{Solution curve of $ye^x + 2y^2 - 1 = 0$}
-        \label{fig:placeholder}
+        \includegraphics[width=0.97\columnwidth]{figs/image.png}
+        \caption{Left: Numerical via \texttt{odeint}. \quad Right: Analytical closed-form.}
+        \label{fig:plots}
     \end{figure}
 \end{frame}
 
 %% -------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Python Code}
+\frametitle{Python Code: Setup and Numerical Solution}
 \begin{lstlisting}
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.integrate import odeint
 
-# Rewrite ODE: dy/dx from ye^x dx + (4y + e^x) dy = 0
-# => dy/dx = -y e^x / (4y + e^x)
+
 def ode(y, x):
     ex = np.exp(x)
     denom = 4*y + ex
-    if abs(denom) < 1e-10:
+    if abs(denom) < 1e-10: 
         return 0.0
     return -y * ex / denom
 
-# Solve numerically
 x = np.linspace(0, 2, 500)
-y0 = [-1.0]
-sol = odeint(ode, y0, x)
+sol = odeint(ode, [-1.0], x)
 \end{lstlisting}
 \end{frame}
 
 %% -------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Python Code}
+\frametitle{Python Code: Analytical Solution}
 \begin{lstlisting}
-# Analytical solution: 2y^2 + e^x * y - 1 = 0
-# Quadratic formula: y = (-e^x +/- sqrt(e^2x + 8)) / 4
-# Use MINUS root to match initial condition y(0) = -1:
-# y(0) = (-1 - sqrt(9)) / 4 = (-1-3)/4 = -1  (correct)
+
 def y_analytical(x_vals):
     ex = np.exp(x_vals)
-    discriminant = ex**2 + 8
-    return (-ex - np.sqrt(discriminant)) / 4
+    return (-ex - np.sqrt(ex**2 + 8)) / 4
 
 y_anal = y_analytical(x)
+
+print(f"Analytical y(0) = {y_analytical(np.array([0.0]))[0]:.4f}")
+
 \end{lstlisting}
 \end{frame}
 
 %% -------------------------------------------------------
 \begin{frame}[fragile]
-\frametitle{Python Code}
+\frametitle{Python Code: Separate Plots}
 \begin{lstlisting}
-# Plot
-plt.figure(figsize=(8, 4))
-plt.plot(x, sol, 'b-', label='Numerical (odeint)')
-plt.plot(x, y_anal, 'r--', label=r'Analytical: $ye^x+2y^2-1=0$')
-plt.xlabel('x')
-plt.ylabel('y')
-plt.title(r'Solution of $ye^x\,dx + (4y+e^x)\,dy = 0$, $y(0)=-1$')
-plt.legend()
-plt.grid(True)
+fig, axes = plt.subplots(1, 2, figsize=(11, 4.5))
+
+axes[0].plot(x, sol, 'b-', linewidth=2, label='Numerical (odeint)')
+axes[0].set_title('Numerical Solution via odeint')
+axes[0].set_xlabel('x'); axes[0].set_ylabel('y')
+axes[0].legend(); axes[0].grid(True)
+
+axes[1].plot(x, y_anal, 'r--', linewidth=2,
+             label=r'Analytical: $ye^x+2y^2-1=0$')
+axes[1].set_title(r'Analytical: $y=(-e^x-\sqrt{e^{2x}+8})/4$')
+axes[1].set_xlabel('x'); axes[1].set_ylabel('y')
+axes[1].legend(); axes[1].grid(True)
+
+plt.suptitle(r'Solution of $ye^x\,dx+(4y+e^x)\,dy=0$, $y(0)=-1$')
 plt.tight_layout()
 plt.savefig("image.png", dpi=300)
 plt.show()
