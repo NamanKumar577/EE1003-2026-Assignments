@@ -177,8 +177,6 @@ from scipy.integrate import odeint
 def ode(y, x):
     ex = np.exp(x)
     denom = 4*y + ex
-    if abs(denom) < 1e-10: 
-        return 0.0
     return -y * ex / denom
 
 x = np.linspace(0, 2, 500)
